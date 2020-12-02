@@ -58,7 +58,8 @@ app.post("/register", async (req, res, next) => {
       next(err);
     }
   });
-  app.use((req, res, next) => {
+  //Middlewares
+  /*app.use((req, res, next) => {
     const error = new Error(`Not found - ${req.originalUrl}`);
       res.status(404);
       next(error);
@@ -69,9 +70,27 @@ app.post("/register", async (req, res, next) => {
         res.json({
           message: error.message,
           stack: process.env.NODE_ENV === "production" ? "=X" : error.stack  });
-      });
+      });*/
+ // Login
 
+     app.post("/login",async(req,res,next)=>{
+         try{
+             const {username,password}=req.body;
+             //verifica o  username valido
+             const user= await User.findOne({username})
+             if (!user) return res.status(400).send({error: "não achou"});
+             //bcrypt verificação de senha 
+             
+             // Verifica se a senha é válida
+             const validPassword = await bcrypt.compare(password, user.password);
 
+             if (!validPassword) return res.Status(400).send({ error: "Invalid password."});
+            }catch (err){
+                res.status(400).send(err);
+                
+            }
+
+     }) ;
 
 /*
 app.use(function(req,res,next){
